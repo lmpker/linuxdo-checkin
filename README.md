@@ -1,12 +1,5 @@
 # LinuxDo 每日签到（每日打卡）
 
-## ~~不可用！~~
-
-~~**CF盾过不了，待事情有转机了再更新吧**~~
-
-
-可以了,感谢 https://github.com/lexiforest/curl_cffi
-
 ## 项目描述
 
 这个项目用于自动登录 [LinuxDo](https://linux.do/) 网站并随机读取几个帖子。它使用 Python 和 Playwright
@@ -23,6 +16,7 @@
 - (可选)`Telegram`通知功能，推送获取签到结果（目前只支持GitHub Actions方式）。
 - (可选)`Gotify`通知功能，推送获取签到结果。
 - (可选)`Server酱³`通知功能，推送获取签到结果。
+- (可选)`wxpush`通知功能，推送获取签到结果。
 ## 环境变量配置
 
 ### 必填变量
@@ -40,9 +34,11 @@
 |-------------------|----------------------|----------------------------------------|
 | `GOTIFY_URL`      | Gotify 服务器地址         | `https://your.gotify.server:8080`      |
 | `GOTIFY_TOKEN`    | Gotify 应用的 API Token | `your_application_token`               |
-| `TELEGRAM_TOKEN`  | Telegram Bot Token   | `123456789:ABCdefghijklmnopqrstuvwxyz` |
-| `TELEGRAM_USERID` | Telegram 用户 ID       | `123456789`                            |
+| `TELEGRAM_BOT_TOKEN`  | Telegram Bot Token   | `123456789:ABCdefghijklmnopqrstuvwxyz` |
+| `TELEGRAM_CHAT_ID` | Telegram 用户 ID       | `123456789`                            |
 | `SC3_PUSH_KEY`    | Server酱³ SendKey     | `sctpxxxxt`                             |
+| `WXPUSH_URL`      | wxpush 服务器地址         | `https://your.wxpush.server`           |
+| `WXPUSH_TOKEN`    | wxpush 的 token        | `your_wxpush_token`                    |
 | `BROWSE_ENABLED`  | 是否启用浏览帖子功能        | `true` 或 `false`，默认为 `true`           |
 
 ---
@@ -62,7 +58,8 @@
         - (可选) `BROWSE_ENABLED`：是否启用浏览帖子，`true` 或 `false`，默认为 `true`。
         - (可选) `GOTIFY_URL` 和 `GOTIFY_TOKEN`。
         - (可选) `SC3_PUSH_KEY`。
-        - (可选) `TELEGRAM_TOKEN` 和 `TELEGRAM_USERID`。
+        - (可选) `WXPUSH_URL` 和 `WXPUSH_TOKEN`。
+        - (可选) `TELEGRAM_BOT_TOKEN` 和 `TELEGRAM_CHAT_ID`。
 
 2. **手动触发工作流**：
     - 进入 GitHub 仓库的 `Actions` 选项卡。
@@ -123,9 +120,11 @@
         - (可选) `BROWSE_ENABLED`：是否启用浏览帖子功能，`true` 或 `false`，默认为 `true`
         - (可选) `GOTIFY_URL`：Gotify服务器地址
         - (可选) `GOTIFY_TOKEN`：Gotify应用Token
-        - (可选) `SC3_PUSH_KEY`：Server酱³ SendKey        
-        - (可选) `TELEGRAM_TOKEN`：Telegram Bot Token
-        - (可选) `TELEGRAM_USERID`：Telegram用户ID
+        - (可选) `SC3_PUSH_KEY`：Server酱³ SendKey
+        - (可选) `WXPUSH_URL`：wxpush服务器地址
+        - (可选) `WXPUSH_TOKEN`：wxpush的token
+        - (可选) `TELEGRAM_BOT_TOKEN`：Telegram Bot Token
+        - (可选) `TELEGRAM_CHAT_ID`：Telegram用户ID
 
 4. **手动拉取脚本**
     - 首次添加仓库后不会立即拉取脚本，需要等待到定时任务触发，当然可以手动触发拉取
@@ -146,13 +145,18 @@
 当配置了 `SC3_PUSH_KEY` 时，签到结果会通过 Server酱³ 推送通知。
 获取 SendKey：请访问 [Server酱³ SendKey获取](https://sc3.ft07.com/sendkey) 获取你的推送密钥。
 
+### wxpush 通知
+
+当配置了 `WXPUSH_URL` 和 `WXPUSH_TOKEN` 时，签到结果会通过 wxpush 推送通知。
+使用 POST 方式推送，请求地址为 `{WXPUSH_URL}/wxsend`。
+
 ### Telegram 通知
 
 可选功能：配置 Telegram 通知，实时获取签到结果。
 
 需要在 GitHub Secrets 中配置：
-- `TELEGRAM_TOKEN`：Telegram Bot Token
-- `TELEGRAM_USERID`：Telegram 用户 ID
+- `TELEGRAM_BOT_TOKEN`：Telegram Bot Token
+- `TELEGRAM_CHAT_ID`：Telegram 用户 ID
 
 获取方法：
 1. Bot Token：与 [@BotFather](https://t.me/BotFather) 对话创建机器人获取
